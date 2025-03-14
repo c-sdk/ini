@@ -11,10 +11,6 @@ void ini_create_with_memory(struct ini_file_t *ini, size_t capacity, struct ini_
   ini->entries = memory;
 }
 
-static char* _parse_section(const char* position) {
-  return NULL;
-}
-
 enum csv_parser_item_t {
   INI_PARSER_INVALID = -1,
   INI_PARSER_INIT,
@@ -31,6 +27,7 @@ static bool _key_character(int character, int delimiter) {
 }
 
 static char* _parse_quoted_item(const char* position, unsigned char delimiter) {
+  (void)delimiter;
   char* next = (char*)position;
   int character = 0;
   while (((character = *++next) != 0 && character != 13) ||
