@@ -1,0 +1,12 @@
+{
+  "name": "ini",
+  "version": "0.1.0",
+  "repo": "c-sdk/ini",
+  "license": "unlicense",
+  "description": "Utilities for reading and writing ini files.",
+  "src": ["./ini.h", "./reader.c", "./writer.c"],
+  "dependencies": {
+    "jwerle/fs.c": "*",
+    "c-sdk/arena": "*"
+  }
+}
