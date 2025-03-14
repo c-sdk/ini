@@ -4,7 +4,7 @@
   "repo": "c-sdk/ini",
   "license": "unlicense",
   "description": "Utilities for reading and writing ini files.",
-  "src": ["./ini.h", "./reader.c", "./writer.c"],
+  "src": ["./ini.h", "./ini.c"],
   "dependencies": {
     "jwerle/fs.c": "*",
     "c-sdk/arena": "*"
