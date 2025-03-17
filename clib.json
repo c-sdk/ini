@@ -1,6 +1,6 @@
 {
   "name": "ini",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repo": "c-sdk/ini",
   "license": "unlicense",
   "description": "Utilities for reading and writing ini files.",
