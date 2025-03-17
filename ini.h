@@ -24,5 +24,7 @@ void ini_parse(arena_t* arena,
                struct ini_file_t* ini,
                const char* const str);
 
+const char* ini_find_by_key(struct ini_file_t* ini,
+                            const char* const key);
 
 #endif // _INI_H_

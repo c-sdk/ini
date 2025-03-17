@@ -127,3 +127,12 @@ void ini_parse(arena_t* arena, struct ini_file_t *ini, const char *const str) {
     position += read;
   }
 }
+
+const char* ini_find_by_key(struct ini_file_t* ini, const char* const key) {
+  for (size_t i = 0; i < ini->count; ++i) {
+    if (memcmp(ini->entries[i].key, key, strlen(key) + 1) == 0) {
+      return ini->entries[i].value;
+    }
+  }
+  return NULL;
+}
