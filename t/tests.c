@@ -118,6 +118,50 @@ void test_2_lines() {
   assert(memcmp(ini.entries[1].value, "v2", 3) == 0);
 }
 
+void test_correctly_detect_eol_only_cr(void) {
+  arena_t arena = {0};
+  arena_create(&arena, 4096);
+
+  struct ini_file_t ini = {
+    .capacity = 12,
+    .count = 0,
+    .entries = arena_alloc(&arena, sizeof(struct ini_entry_t) * 12)
+  };
+
+  const char* const data = "HOST=127.0.0.1\nPORT=8080";
+
+  ini_parse(&arena, &ini, data);
+
+  assert(ini.count == 2);
+  assert(ini.capacity == 12);
+  assert(memcmp(ini.entries[0].key, "HOST", 5) == 0);
+  assert(memcmp(ini.entries[0].value, "127.0.0.1", strlen("127.0.0.1")) == 0);
+  assert(memcmp(ini.entries[1].key, "PORT", 5) == 0);
+  assert(memcmp(ini.entries[1].value, "8080", strlen("8080")) == 0);
+}
+
+void test_correctly_detect_eol_lf_cr(void) {
+  arena_t arena = {0};
+  arena_create(&arena, 4096);
+
+  struct ini_file_t ini = {
+    .capacity = 12,
+    .count = 0,
+    .entries = arena_alloc(&arena, sizeof(struct ini_entry_t) * 12)
+  };
+
+  const char* const data = "HOST=127.0.0.1\r\nPORT=8080\r\n";
+
+  ini_parse(&arena, &ini, data);
+
+  assert(ini.count == 2);
+  assert(ini.capacity == 12);
+  assert(memcmp(ini.entries[0].key, "HOST", 5) == 0);
+  assert(memcmp(ini.entries[0].value, "127.0.0.1", strlen("127.0.0.1")) == 0);
+  assert(memcmp(ini.entries[1].key, "PORT", 5) == 0);
+  assert(memcmp(ini.entries[1].value, "8080", strlen("8080")) == 0);
+}
+
 int main(void) {
   printf("test ini\n");
   test_empty_file();
@@ -125,6 +169,8 @@ int main(void) {
   test_one_key_quoted_value();
   test_allow_escaped_quotes_on_value();
   test_2_lines();
+  test_correctly_detect_eol_only_cr();
+  test_correctly_detect_eol_lf_cr();
   printf("done.\n");
   return 0;
 }

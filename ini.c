@@ -26,12 +26,23 @@ static bool _key_character(int character, int delimiter) {
   return character != 13 && character != delimiter;
 }
 
+
+static size_t _reach_eol(char* position) {
+  if (*position == '\n') { return 1; }
+  if (*position == '\r' && *(position + 1) == '\n') { return 2; }
+  return 0;
+}
+
 static char* _parse_quoted_item(const char* position, unsigned char delimiter) {
   (void)delimiter;
   char* next = (char*)position;
   int character = 0;
-  while (((character = *++next) != 0 && character != 13) ||
-         (character == 10 && *(next + 1) != 13)) {
+  while ((character = *++next) != 0) {
+    size_t eol = 0;
+    if ((eol = _reach_eol(next)) > 0) {
+      next -= 1;
+      break;
+    }
     if (character == '\\' && *(next + 1) == '"') {
       next += 2;
     }
@@ -44,7 +55,12 @@ static char* _parse_quoted_item(const char* position, unsigned char delimiter) {
 }
 
 static const char* _parse_item(const char* position, int delimiter) {
-  while (*position++ != 0 && _key_character(*position, delimiter));
+  while (*position++ != 0 && _key_character(*position, delimiter)) {
+    size_t eol = 0;
+    if ((eol = _reach_eol((char*)position)) > 0) {
+      break;
+    }
+  }
   return position;
 }
 
@@ -82,9 +98,7 @@ static size_t _parse(const char* const position,
   default: {
     if (expecting_value) {
       char* end = (char*)position;
-      while (*end != 0 &&
-             (!(*end++ == '\r' && *end != '\n') ||
-              *end != '\n'));
+      while (*end != 0 && _reach_eol(++end) == 0);
       *item = INI_PARSER_ITEM;
       return end - position;
     } else {
